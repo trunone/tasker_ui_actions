@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Tasker Click Plugin</string>
+    <string name="plugin_name">Click by ID</string>
+    <string name="enter_view_id">Enter View ID (e.g., com.package:id/button)</string>
+    <string name="save">Save</string>
+    <string name="accessibility_service_description">Allows the plugin to click elements by ID.</string>
+</resources>
