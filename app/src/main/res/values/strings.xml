@@ -4,4 +4,9 @@
     <string name="enter_view_id">Enter View ID (e.g., com.package:id/button)</string>
     <string name="save">Save</string>
     <string name="accessibility_service_description">Allows the plugin to click elements by ID.</string>
+    <string name="activity_main_title">Tasker Click Plugin</string>
+    <string name="service_status_enabled">Accessibility Service: Enabled</string>
+    <string name="service_status_disabled">Accessibility Service: Disabled</string>
+    <string name="enable_service_button">Enable Accessibility Service</string>
+    <string name="restricted_setting_help">If you see "Restricted Setting" when enabling, please go to App Info > 3-dot menu > Allow restricted settings.</string>
 </resources>
