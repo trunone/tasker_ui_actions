@@ -9,7 +9,33 @@ import android.view.accessibility.AccessibilityNodeInfo
 class ClickService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        // No-op
+        if (event == null) return
+
+        // Ignore events from our own app
+        val eventPackage = event.packageName?.toString()
+        if (eventPackage != null && eventPackage == packageName) {
+            return
+        }
+
+        val source = event.source ?: return
+        val viewId = extractViewId(source)
+        if (!viewId.isNullOrEmpty()) {
+            addRecentViewId(viewId)
+        }
+    }
+
+    private fun extractViewId(node: AccessibilityNodeInfo): String? {
+        if (!node.viewIdResourceName.isNullOrEmpty()) {
+            return node.viewIdResourceName
+        }
+        var current: AccessibilityNodeInfo? = node.parent
+        while (current != null) {
+            if (!current.viewIdResourceName.isNullOrEmpty()) {
+                return current.viewIdResourceName
+            }
+            current = current.parent
+        }
+        return null
     }
 
     override fun onInterrupt() {
@@ -76,5 +102,33 @@ class ClickService : AccessibilityService() {
 
     companion object {
         var instance: ClickService? = null
+        private const val MAX_RECENT_VIEW_IDS = 20
+        private val recentViewIds = LinkedHashSet<String>()
+
+        fun addRecentViewId(viewId: String) {
+            synchronized(recentViewIds) {
+                recentViewIds.remove(viewId)
+                recentViewIds.add(viewId)
+                if (recentViewIds.size > MAX_RECENT_VIEW_IDS) {
+                    val iterator = recentViewIds.iterator()
+                    if (iterator.hasNext()) {
+                        iterator.next()
+                        iterator.remove()
+                    }
+                }
+            }
+        }
+
+        fun getRecentViewIds(): List<String> {
+            synchronized(recentViewIds) {
+                return recentViewIds.toList().reversed()
+            }
+        }
+
+        fun clearRecentViewIds() {
+            synchronized(recentViewIds) {
+                recentViewIds.clear()
+            }
+        }
     }
 }
