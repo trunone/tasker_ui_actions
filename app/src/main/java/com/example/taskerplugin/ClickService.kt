@@ -72,7 +72,11 @@ class ClickService : AccessibilityService() {
         }
     }
 
-    fun showCaptureNotification() {
+    fun showCaptureNotification(activityPendingIntent: PendingIntent? = null) {
+        if (activityPendingIntent != null) {
+            capturedActivityPendingIntent = activityPendingIntent
+        }
+
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -119,6 +123,23 @@ class ClickService : AccessibilityService() {
 
         val finalPkg = targetPkg ?: extractedPkg
         val viewIdsToReturn = if (clickableIds.isNotEmpty()) clickableIds else allIds
+
+        val fillInIntent = Intent().apply {
+            putStringArrayListExtra(Constants.EXTRA_CAPTURED_VIEW_IDS, ArrayList(viewIdsToReturn))
+            putExtra(Constants.EXTRA_CAPTURED_PACKAGE_NAME, finalPkg)
+        }
+
+        val pendingIntent = capturedActivityPendingIntent
+        capturedActivityPendingIntent = null
+
+        if (pendingIntent != null) {
+            try {
+                pendingIntent.send(this, 0, fillInIntent)
+                return
+            } catch (e: Exception) {
+                Log.e("ClickService", "Failed to send pending intent", e)
+            }
+        }
 
         val intent = Intent(this, PluginActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -215,6 +236,7 @@ class ClickService : AccessibilityService() {
         private const val MAX_RECENT_VIEW_IDS = 20
         private val recentViewIds = LinkedHashSet<String>()
         var lastActiveAppPackage: String? = null
+        private var capturedActivityPendingIntent: PendingIntent? = null
 
         fun traverseNodesForViewIds(
             root: AccessibilityNodeInfo?,

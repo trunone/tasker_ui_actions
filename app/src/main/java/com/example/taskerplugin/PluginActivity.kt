@@ -1,6 +1,7 @@
 package com.example.taskerplugin
 
 import android.Manifest
+import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -45,7 +46,7 @@ class PluginActivity : AppCompatActivity() {
                         REQUEST_CODE_NOTIFICATION_PERM
                     )
                 } else {
-                    ClickService.instance?.showCaptureNotification()
+                    triggerCaptureNotification()
                 }
             }
         }
@@ -113,6 +114,18 @@ class PluginActivity : AppCompatActivity() {
         }
     }
 
+    private fun triggerCaptureNotification() {
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            Intent(this, PluginActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+            },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        )
+        ClickService.instance?.showCaptureNotification(pendingIntent)
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -120,7 +133,7 @@ class PluginActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_NOTIFICATION_PERM) {
-            ClickService.instance?.showCaptureNotification()
+            triggerCaptureNotification()
         }
     }
 
