@@ -47,35 +47,29 @@ class ClickService : AccessibilityService() {
         if (nodes != null) {
             for (node in nodes) {
                 if (!clicked) {
-                     clicked = tryClick(node)
+                    clicked = tryClick(node)
                 }
-                node.recycle()
             }
         } else {
             Log.d("ClickService", "No nodes found for ID: $viewId")
         }
 
-        rootNode.recycle()
         return clicked
     }
 
     private fun tryClick(node: AccessibilityNodeInfo): Boolean {
-         if (node.isClickable) {
+        if (node.isClickable) {
             Log.d("ClickService", "Clicking node: ${node.viewIdResourceName}")
             return node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
         }
 
         var current = node.parent
         while (current != null) {
-             if (current.isClickable) {
-                 Log.d("ClickService", "Clicking parent node: ${current.viewIdResourceName}")
-                 val result = current.performAction(AccessibilityNodeInfo.ACTION_CLICK)
-                 current.recycle()
-                 return result
-             }
-             val next = current.parent
-             current.recycle()
-             current = next
+            if (current.isClickable) {
+                Log.d("ClickService", "Clicking parent node: ${current.viewIdResourceName}")
+                return current.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+            }
+            current = current.parent
         }
         return false
     }
