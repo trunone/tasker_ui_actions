@@ -11,6 +11,7 @@ import android.os.Build
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 
@@ -19,8 +20,12 @@ class ClickService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         if (event == null) return
 
-        // Ignore events from our own app
         val eventPackage = event.packageName?.toString()
+        if (eventPackage != null && eventPackage != packageName && eventPackage != SYSTEM_UI_PACKAGE) {
+            lastActiveAppPackage = eventPackage
+        }
+
+        // Ignore events from our own app
         if (eventPackage != null && eventPackage == packageName) {
             return
         }
@@ -106,17 +111,59 @@ class ClickService : AccessibilityService() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(NOTIFICATION_ID)
 
-        val rootNode = rootInActiveWindow
-        val (clickableIds, allIds, targetPackage) = traverseNodesForViewIds(rootNode)
+        val (rootNode, targetPkg) = getTargetApplicationRootNode()
+        val (clickableIds, allIds, extractedPkg) = traverseNodesForViewIds(
+            rootNode,
+            ignoredPackages = setOf(packageName, SYSTEM_UI_PACKAGE)
+        )
 
+        val finalPkg = targetPkg ?: extractedPkg
         val viewIdsToReturn = if (clickableIds.isNotEmpty()) clickableIds else allIds
 
         val intent = Intent(this, PluginActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
             putStringArrayListExtra(Constants.EXTRA_CAPTURED_VIEW_IDS, ArrayList(viewIdsToReturn))
-            putExtra(Constants.EXTRA_CAPTURED_PACKAGE_NAME, targetPackage)
+            putExtra(Constants.EXTRA_CAPTURED_PACKAGE_NAME, finalPkg)
         }
         startActivity(intent)
+    }
+
+    private fun getTargetApplicationRootNode(): Pair<AccessibilityNodeInfo?, String?> {
+        val lastPkg = lastActiveAppPackage
+
+        try {
+            val windowList = windows
+            if (!windowList.isNullOrEmpty()) {
+                if (lastPkg != null) {
+                    for (window in windowList) {
+                        val root = window.root
+                        if (root != null && root.packageName?.toString() == lastPkg) {
+                            return Pair(root, lastPkg)
+                        }
+                    }
+                }
+
+                for (window in windowList) {
+                    if (window.type == AccessibilityWindowInfo.TYPE_APPLICATION) {
+                        val root = window.root
+                        val pkg = root?.packageName?.toString()
+                        if (pkg != null && pkg != packageName && pkg != SYSTEM_UI_PACKAGE) {
+                            return Pair(root, pkg)
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("ClickService", "Error accessing windows list", e)
+        }
+
+        val activeRoot = rootInActiveWindow
+        val activePkg = activeRoot?.packageName?.toString()
+        if (activePkg != null && activePkg != packageName && activePkg != SYSTEM_UI_PACKAGE) {
+            return Pair(activeRoot, activePkg)
+        }
+
+        return Pair(null, lastPkg)
     }
 
     fun performClick(viewId: String): Boolean {
@@ -164,10 +211,15 @@ class ClickService : AccessibilityService() {
         var instance: ClickService? = null
         const val NOTIFICATION_ID = 1001
         const val CHANNEL_ID = "view_id_capture_channel"
+        const val SYSTEM_UI_PACKAGE = "com.android.systemui"
         private const val MAX_RECENT_VIEW_IDS = 20
         private val recentViewIds = LinkedHashSet<String>()
+        var lastActiveAppPackage: String? = null
 
-        fun traverseNodesForViewIds(root: AccessibilityNodeInfo?): Triple<List<String>, List<String>, String?> {
+        fun traverseNodesForViewIds(
+            root: AccessibilityNodeInfo?,
+            ignoredPackages: Set<String> = emptySet()
+        ): Triple<List<String>, List<String>, String?> {
             if (root == null) return Triple(emptyList(), emptyList(), null)
 
             val clickableIds = LinkedHashSet<String>()
@@ -179,15 +231,21 @@ class ClickService : AccessibilityService() {
 
             while (queue.isNotEmpty()) {
                 val node = queue.removeFirst()
-                if (packageNameStr == null && node.packageName != null) {
-                    packageNameStr = node.packageName.toString()
+                val nodePkg = node.packageName?.toString()
+                if (packageNameStr == null && nodePkg != null && !ignoredPackages.contains(nodePkg)) {
+                    packageNameStr = nodePkg
                 }
 
-                val viewId = node.viewIdResourceName
-                if (!viewId.isNullOrEmpty()) {
-                    allIds.add(viewId)
-                    if (isNodeOrParentClickable(node)) {
-                        clickableIds.add(viewId)
+                if (nodePkg == null || !ignoredPackages.contains(nodePkg)) {
+                    val viewId = node.viewIdResourceName
+                    if (!viewId.isNullOrEmpty()) {
+                        val isIgnored = ignoredPackages.any { pkg -> viewId.startsWith("$pkg:") }
+                        if (!isIgnored) {
+                            allIds.add(viewId)
+                            if (isNodeOrParentClickable(node)) {
+                                clickableIds.add(viewId)
+                            }
+                        }
                     }
                 }
 
