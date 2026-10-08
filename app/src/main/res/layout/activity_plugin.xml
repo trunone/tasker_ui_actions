@@ -10,16 +10,32 @@
         android:layout_height="wrap_content"
         android:text="@string/enter_view_id" />
 
-    <EditText
-        android:id="@+id/edit_view_id"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="com.package:id/button" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:id="@+id/edit_view_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="com.package:id/button" />
+
+        <Button
+            android:id="@+id/button_pick_view_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/pick_view_id" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/button_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="@string/save" />
 
 </LinearLayout>
