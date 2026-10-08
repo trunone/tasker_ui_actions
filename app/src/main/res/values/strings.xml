@@ -9,4 +9,17 @@
     <string name="service_status_disabled">Accessibility Service: Disabled</string>
     <string name="enable_service_button">Enable Accessibility Service</string>
     <string name="restricted_setting_help">If you see "Restricted Setting" when enabling, please go to App Info > 3-dot menu > Allow restricted settings.</string>
+    <string name="pick_view_id">Pick View ID</string>
+    <string name="pick_view_id_title">Select View ID</string>
+    <string name="no_view_ids_found">No view IDs captured yet. Open the target app, click or interact with the desired element, then return here to pick it.</string>
+    <string name="service_not_running_title">Service Disabled</string>
+    <string name="service_not_running_message">Accessibility Service is not running. Please enable the Tasker Click Plugin service to capture view IDs from other apps.</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="cancel">Cancel</string>
+    <string name="notification_channel_name">View ID Capture</string>
+    <string name="notification_title">Capture View IDs</string>
+    <string name="notification_text">Switch to target app, then tap here to capture view IDs.</string>
+    <string name="notification_posted_toast">Switch to target app and tap notification to capture view IDs.</string>
+    <string name="no_view_ids_in_window">No view IDs found in current window.</string>
+    <string name="captured_view_ids_title">Select View ID from %s</string>
 </resources>
