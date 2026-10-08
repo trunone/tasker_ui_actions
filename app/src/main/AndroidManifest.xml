@@ -25,6 +25,8 @@
             android:exported="true"
             android:label="@string/plugin_name"
             android:icon="@android:drawable/ic_menu_edit"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />

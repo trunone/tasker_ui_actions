@@ -17,18 +17,10 @@ import androidx.core.content.ContextCompat
 class PluginActivity : AppCompatActivity() {
 
     private lateinit var editViewId: EditText
-    private var callerPackage: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_plugin)
-
-        if (savedInstanceState != null) {
-            callerPackage = savedInstanceState.getString(KEY_CALLER_PACKAGE)
-        }
-        if (callerPackage == null) {
-            callerPackage = callingPackage ?: referrer?.host
-        }
 
         editViewId = findViewById(R.id.edit_view_id)
         val buttonPickViewId = findViewById<Button>(R.id.button_pick_view_id)
@@ -82,28 +74,8 @@ class PluginActivity : AppCompatActivity() {
             resultIntent.putExtra(Constants.EXTRA_STRING_BLURB, blurb)
 
             setResult(RESULT_OK, resultIntent)
-
-            val targetPkg = callerPackage
-            if (!targetPkg.isNullOrEmpty()) {
-                val launchIntent = packageManager.getLaunchIntentForPackage(targetPkg)?.apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
-                }
-                if (launchIntent != null) {
-                    try {
-                        startActivity(launchIntent)
-                    } catch (e: Exception) {
-                        // Ignore if launch intent fails
-                    }
-                }
-            }
-
             finish()
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(KEY_CALLER_PACKAGE, callerPackage)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -167,6 +139,5 @@ class PluginActivity : AppCompatActivity() {
 
     companion object {
         private const val REQUEST_CODE_NOTIFICATION_PERM = 101
-        private const val KEY_CALLER_PACKAGE = "key_caller_package"
     }
 }
