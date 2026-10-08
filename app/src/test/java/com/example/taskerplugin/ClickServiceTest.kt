@@ -65,4 +65,15 @@ class ClickServiceTest {
         assertEquals(0, all.size)
         assertEquals(null, pkgName)
     }
+
+    @Test
+    fun testTraverseWithIgnoredPackages() {
+        val (clickable, all, pkgName) = ClickService.traverseNodesForViewIds(
+            null,
+            ignoredPackages = setOf("com.example.taskerplugin", "com.android.systemui")
+        )
+        assertEquals(0, clickable.size)
+        assertEquals(0, all.size)
+        assertEquals(null, pkgName)
+    }
 }
