@@ -31,9 +31,13 @@ class ClickService : AccessibilityService() {
         }
 
         val source = event.source ?: return
-        val viewId = extractViewId(source)
-        if (!viewId.isNullOrEmpty()) {
-            addRecentViewId(viewId)
+        val (clickableIds, allIds, _) = traverseNodesForViewIds(
+            source,
+            ignoredPackages = setOf(packageName, SYSTEM_UI_PACKAGE)
+        )
+        val extractedIds = if (clickableIds.isNotEmpty()) clickableIds else allIds
+        for (id in extractedIds) {
+            addRecentViewId(id)
         }
     }
 
@@ -122,7 +126,13 @@ class ClickService : AccessibilityService() {
         )
 
         val finalPkg = targetPkg ?: extractedPkg
-        val viewIdsToReturn = if (clickableIds.isNotEmpty()) clickableIds else allIds
+        var viewIdsToReturn = if (clickableIds.isNotEmpty()) clickableIds else allIds
+        if (viewIdsToReturn.isEmpty()) {
+            val recents = getRecentViewIds()
+            if (recents.isNotEmpty()) {
+                viewIdsToReturn = recents
+            }
+        }
 
         val fillInIntent = Intent().apply {
             putStringArrayListExtra(Constants.EXTRA_CAPTURED_VIEW_IDS, ArrayList(viewIdsToReturn))
