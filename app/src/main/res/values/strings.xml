@@ -16,4 +16,10 @@
     <string name="service_not_running_message">Accessibility Service is not running. Please enable the Tasker Click Plugin service to capture view IDs from other apps.</string>
     <string name="open_settings">Open Settings</string>
     <string name="cancel">Cancel</string>
+    <string name="notification_channel_name">View ID Capture</string>
+    <string name="notification_title">Capture View IDs</string>
+    <string name="notification_text">Switch to target app, then tap here to capture view IDs.</string>
+    <string name="notification_posted_toast">Switch to target app and tap notification to capture view IDs.</string>
+    <string name="no_view_ids_in_window">No view IDs found in current window.</string>
+    <string name="captured_view_ids_title">Select View ID from %s</string>
 </resources>

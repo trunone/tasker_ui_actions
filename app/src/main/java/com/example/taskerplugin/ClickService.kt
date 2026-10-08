@@ -2,9 +2,17 @@ package com.example.taskerplugin
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import android.widget.Toast
+import androidx.core.app.NotificationCompat
 
 class ClickService : AccessibilityService() {
 
@@ -59,6 +67,58 @@ class ClickService : AccessibilityService() {
         }
     }
 
+    fun showCaptureNotification() {
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                getString(R.string.notification_channel_name),
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val captureIntent = Intent(this, CaptureReceiver::class.java).apply {
+            action = CaptureReceiver.ACTION_CAPTURE_VIEW_IDS
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            this,
+            0,
+            captureIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(android.R.drawable.ic_menu_search)
+            .setContentTitle(getString(R.string.notification_title))
+            .setContentText(getString(R.string.notification_text))
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        notificationManager.notify(NOTIFICATION_ID, notification)
+        Toast.makeText(this, getString(R.string.notification_posted_toast), Toast.LENGTH_LONG).show()
+    }
+
+    fun captureCurrentWindowViewIds() {
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(NOTIFICATION_ID)
+
+        val rootNode = rootInActiveWindow
+        val (clickableIds, allIds, targetPackage) = traverseNodesForViewIds(rootNode)
+
+        val viewIdsToReturn = if (clickableIds.isNotEmpty()) clickableIds else allIds
+
+        val intent = Intent(this, PluginActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            putStringArrayListExtra(Constants.EXTRA_CAPTURED_VIEW_IDS, ArrayList(viewIdsToReturn))
+            putExtra(Constants.EXTRA_CAPTURED_PACKAGE_NAME, targetPackage)
+        }
+        startActivity(intent)
+    }
+
     fun performClick(viewId: String): Boolean {
         Log.d("ClickService", "Attempting to click view with ID: $viewId")
         val rootNode = rootInActiveWindow
@@ -102,8 +162,55 @@ class ClickService : AccessibilityService() {
 
     companion object {
         var instance: ClickService? = null
+        const val NOTIFICATION_ID = 1001
+        const val CHANNEL_ID = "view_id_capture_channel"
         private const val MAX_RECENT_VIEW_IDS = 20
         private val recentViewIds = LinkedHashSet<String>()
+
+        fun traverseNodesForViewIds(root: AccessibilityNodeInfo?): Triple<List<String>, List<String>, String?> {
+            if (root == null) return Triple(emptyList(), emptyList(), null)
+
+            val clickableIds = LinkedHashSet<String>()
+            val allIds = LinkedHashSet<String>()
+            var packageNameStr: String? = root.packageName?.toString()
+
+            val queue = ArrayDeque<AccessibilityNodeInfo>()
+            queue.add(root)
+
+            while (queue.isNotEmpty()) {
+                val node = queue.removeFirst()
+                if (packageNameStr == null && node.packageName != null) {
+                    packageNameStr = node.packageName.toString()
+                }
+
+                val viewId = node.viewIdResourceName
+                if (!viewId.isNullOrEmpty()) {
+                    allIds.add(viewId)
+                    if (isNodeOrParentClickable(node)) {
+                        clickableIds.add(viewId)
+                    }
+                }
+
+                for (i in 0 until node.childCount) {
+                    val child = node.getChild(i)
+                    if (child != null) {
+                        queue.add(child)
+                    }
+                }
+            }
+
+            return Triple(clickableIds.toList(), allIds.toList(), packageNameStr)
+        }
+
+        private fun isNodeOrParentClickable(node: AccessibilityNodeInfo): Boolean {
+            if (node.isClickable) return true
+            var parent = node.parent
+            while (parent != null) {
+                if (parent.isClickable) return true
+                parent = parent.parent
+            }
+            return false
+        }
 
         fun addRecentViewId(viewId: String) {
             synchronized(recentViewIds) {

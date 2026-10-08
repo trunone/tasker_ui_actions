@@ -57,4 +57,12 @@ class ClickServiceTest {
         val recent = ClickService.getRecentViewIds()
         assertEquals(0, recent.size)
     }
+
+    @Test
+    fun testTraverseNullNode() {
+        val (clickable, all, pkgName) = ClickService.traverseNodesForViewIds(null)
+        assertEquals(0, clickable.size)
+        assertEquals(0, all.size)
+        assertEquals(null, pkgName)
+    }
 }
