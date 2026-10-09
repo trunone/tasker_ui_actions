@@ -21,19 +21,19 @@ class ClickService : AccessibilityService() {
         if (event == null) return
 
         val eventPackage = event.packageName?.toString()
-        if (eventPackage != null && eventPackage != packageName && eventPackage != SYSTEM_UI_PACKAGE) {
+        if (eventPackage != null && isTargetAppPackage(eventPackage)) {
             lastActiveAppPackage = eventPackage
         }
 
-        // Ignore events from our own app
-        if (eventPackage != null && eventPackage == packageName) {
+        // Ignore events from our own app, system UI, host apps, or launcher
+        if (eventPackage == null || !isTargetAppPackage(eventPackage)) {
             return
         }
 
         val source = event.source ?: return
         val (clickableIds, allIds, _) = traverseNodesForViewIds(
             source,
-            ignoredPackages = setOf(packageName, SYSTEM_UI_PACKAGE)
+            ignoredPackages = getIgnoredPackages()
         )
         val extractedIds = if (clickableIds.isNotEmpty()) clickableIds else allIds
         for (id in extractedIds) {
@@ -122,7 +122,7 @@ class ClickService : AccessibilityService() {
         val (rootNode, targetPkg) = getTargetApplicationRootNode()
         val (clickableIds, allIds, extractedPkg) = traverseNodesForViewIds(
             rootNode,
-            ignoredPackages = setOf(packageName, SYSTEM_UI_PACKAGE)
+            ignoredPackages = getIgnoredPackages()
         )
 
         val finalPkg = targetPkg ?: extractedPkg
@@ -165,7 +165,7 @@ class ClickService : AccessibilityService() {
         try {
             val windowList = windows
             if (!windowList.isNullOrEmpty()) {
-                if (lastPkg != null) {
+                if (lastPkg != null && isTargetAppPackage(lastPkg)) {
                     for (window in windowList) {
                         val root = window.root
                         if (root != null && root.packageName?.toString() == lastPkg) {
@@ -178,7 +178,7 @@ class ClickService : AccessibilityService() {
                     if (window.type == AccessibilityWindowInfo.TYPE_APPLICATION) {
                         val root = window.root
                         val pkg = root?.packageName?.toString()
-                        if (pkg != null && pkg != packageName && pkg != SYSTEM_UI_PACKAGE) {
+                        if (pkg != null && isTargetAppPackage(pkg)) {
                             return Pair(root, pkg)
                         }
                     }
@@ -190,7 +190,7 @@ class ClickService : AccessibilityService() {
 
         val activeRoot = rootInActiveWindow
         val activePkg = activeRoot?.packageName?.toString()
-        if (activePkg != null && activePkg != packageName && activePkg != SYSTEM_UI_PACKAGE) {
+        if (activePkg != null && isTargetAppPackage(activePkg)) {
             return Pair(activeRoot, activePkg)
         }
 
@@ -247,6 +247,51 @@ class ClickService : AccessibilityService() {
         private val recentViewIds = LinkedHashSet<String>()
         var lastActiveAppPackage: String? = null
         private var capturedActivityPendingIntent: PendingIntent? = null
+
+        private val KNOWN_HOST_PACKAGES = setOf(
+            "net.dinglisch.android.taskerm",
+            "net.dinglisch.android.taskerm.trial",
+            "com.twofortyfouram.locale",
+            "com.twofortyfouram.locale.setting.plugin"
+        )
+
+        fun isLauncherPackage(context: Context, packageName: String?): Boolean {
+            if (packageName.isNullOrEmpty()) return false
+            val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+            val resolveInfo = context.packageManager.resolveActivity(intent, 0)
+            val homePackage = resolveInfo?.activityInfo?.packageName
+            return packageName == homePackage ||
+                   packageName.contains("launcher", ignoreCase = true) ||
+                   packageName.contains("nexuslauncher", ignoreCase = true) ||
+                   packageName.contains("trebuchet", ignoreCase = true)
+        }
+
+        fun isTargetAppPackage(context: Context, pkg: String?): Boolean {
+            if (pkg.isNullOrEmpty()) return false
+            if (pkg == context.packageName || pkg == SYSTEM_UI_PACKAGE || KNOWN_HOST_PACKAGES.contains(pkg)) {
+                return false
+            }
+            if (isLauncherPackage(context, pkg)) {
+                return false
+            }
+            return true
+        }
+
+        private fun ClickService.isTargetAppPackage(pkg: String?): Boolean {
+            return ClickService.isTargetAppPackage(this, pkg)
+        }
+
+        private fun ClickService.getIgnoredPackages(): Set<String> {
+            val set = mutableSetOf(packageName, SYSTEM_UI_PACKAGE)
+            set.addAll(KNOWN_HOST_PACKAGES)
+            val homeIntent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+            val resolveInfo = packageManager.resolveActivity(homeIntent, 0)
+            val homePackage = resolveInfo?.activityInfo?.packageName
+            if (!homePackage.isNullOrEmpty()) {
+                set.add(homePackage)
+            }
+            return set
+        }
 
         fun traverseNodesForViewIds(
             root: AccessibilityNodeInfo?,
