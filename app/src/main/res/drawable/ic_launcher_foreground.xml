@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Targeted UI Element Frame (View ID target) -->
+    <path
+        android:pathData="M33,33 h42 a4,4 0 0,1 4,4 v22 a4,4 0 0,1 -4,4 h-42 a4,4 0 0,1 -4,-4 v-22 a4,4 0 0,1 4,-4 Z"
+        android:fillColor="#2638BDF8"
+        android:strokeColor="#6038BDF8"
+        android:strokeWidth="1.5" />
+
+    <!-- UI View Corner Brackets -->
+    <path
+        android:pathData="M30,38 V31 A1,1 0 0,1 31,30 H38"
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M70,30 H77 A1,1 0 0,1 78,31 V38"
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M78,55 V62 A1,1 0 0,1 77,63 H70"
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M38,63 H31 A1,1 0 0,1 30,62 V55"
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+
+    <!-- View ID indicator line placeholder -->
+    <path
+        android:pathData="M37,39 H48 M52,39 H69"
+        android:strokeColor="#A5F3FC"
+        android:strokeWidth="2"
+        android:strokeLineCap="round" />
+
+    <!-- Tap Ripple Effects -->
+    <path
+        android:pathData="M54,46m-16,0a16,16 0 1,0 32,0a16,16 0 1,0 -32,0"
+        android:strokeColor="#4038BDF8"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000" />
+    <path
+        android:pathData="M54,46m-10,0a10,10 0 1,0 20,0a10,10 0 1,0 -20,0"
+        android:strokeColor="#8038BDF8"
+        android:strokeWidth="2"
+        android:fillColor="#1F38BDF8" />
+    <path
+        android:pathData="M54,46m-4,0a4,4 0 1,0 8,0a4,4 0 1,0 -8,0"
+        android:fillColor="#38BDF8" />
+
+    <!-- Cursor Pointer -->
+    <path
+        android:pathData="M54,46 L54,71 L61.5,64 L68.5,78 L73.5,75.5 L66.5,62 L75,62 Z"
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#1E1B4B"
+        android:strokeWidth="1.5"
+        android:strokeLineJoin="round" />
+</vector>
