@@ -17,6 +17,8 @@ import androidx.core.app.NotificationCompat
 
 class ClickService : AccessibilityService() {
 
+    private var lastQueryRequestTime = 0L
+
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         if (event == null) return
 
@@ -30,10 +32,25 @@ class ClickService : AccessibilityService() {
             return
         }
 
-        val source = event.source ?: return
-        val viewId = extractViewId(source)
-        if (!viewId.isNullOrEmpty()) {
-            addRecentViewId(viewId)
+        val source = event.source
+        if (source != null) {
+            val viewId = extractViewId(source)
+            if (!viewId.isNullOrEmpty()) {
+                addRecentViewId(viewId)
+            }
+        }
+
+        notifyStateChangedThrottled()
+    }
+
+    private fun notifyStateChangedThrottled() {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastQueryRequestTime >= QUERY_REQUEST_THROTTLE_MS) {
+            lastQueryRequestTime = currentTime
+            val intent = Intent(Constants.ACTION_REQUEST_QUERY).apply {
+                putExtra(Constants.EXTRA_ACTIVITY, StateActivity::class.java.name)
+            }
+            sendBroadcast(intent)
         }
     }
 
@@ -72,7 +89,7 @@ class ClickService : AccessibilityService() {
         }
     }
 
-    fun showCaptureNotification() {
+    fun showCaptureNotification(targetActivityClassName: String = PluginActivity::class.java.name) {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -86,6 +103,7 @@ class ClickService : AccessibilityService() {
 
         val captureIntent = Intent(this, CaptureReceiver::class.java).apply {
             action = CaptureReceiver.ACTION_CAPTURE_VIEW_IDS
+            putExtra(Constants.EXTRA_TARGET_ACTIVITY, targetActivityClassName)
         }
         val pendingIntent = PendingIntent.getBroadcast(
             this,
@@ -107,7 +125,7 @@ class ClickService : AccessibilityService() {
         Toast.makeText(this, getString(R.string.notification_posted_toast), Toast.LENGTH_LONG).show()
     }
 
-    fun captureCurrentWindowViewIds() {
+    fun captureCurrentWindowViewIds(targetActivityClassName: String? = null) {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(NOTIFICATION_ID)
 
@@ -120,12 +138,47 @@ class ClickService : AccessibilityService() {
         val finalPkg = targetPkg ?: extractedPkg
         val viewIdsToReturn = if (clickableIds.isNotEmpty()) clickableIds else allIds
 
-        val intent = Intent(this, PluginActivity::class.java).apply {
+        val targetClass = try {
+            if (!targetActivityClassName.isNullOrEmpty()) Class.forName(targetActivityClassName) else PluginActivity::class.java
+        } catch (e: Exception) {
+            PluginActivity::class.java
+        }
+
+        val intent = Intent(this, targetClass).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
             putStringArrayListExtra(Constants.EXTRA_CAPTURED_VIEW_IDS, ArrayList(viewIdsToReturn))
             putExtra(Constants.EXTRA_CAPTURED_PACKAGE_NAME, finalPkg)
         }
         startActivity(intent)
+    }
+
+    fun isViewIdVisible(viewId: String?): Boolean {
+        if (viewId.isNullOrEmpty()) return false
+        val roots = mutableListOf<AccessibilityNodeInfo>()
+        rootInActiveWindow?.let { roots.add(it) }
+        try {
+            windows?.forEach { window ->
+                window.root?.let { root ->
+                    if (roots.none { it == root }) {
+                        roots.add(root)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("ClickService", "Error accessing windows for visibility check", e)
+        }
+
+        for (root in roots) {
+            val nodes = root.findAccessibilityNodeInfosByViewId(viewId)
+            if (!nodes.isNullOrEmpty()) {
+                for (node in nodes) {
+                    if (node.isVisibleToUser) {
+                        return true
+                    }
+                }
+            }
+        }
+        return false
     }
 
     private fun getTargetApplicationRootNode(): Pair<AccessibilityNodeInfo?, String?> {
@@ -213,6 +266,7 @@ class ClickService : AccessibilityService() {
         const val CHANNEL_ID = "view_id_capture_channel"
         const val SYSTEM_UI_PACKAGE = "com.android.systemui"
         private const val MAX_RECENT_VIEW_IDS = 20
+        private const val QUERY_REQUEST_THROTTLE_MS = 300L
         private val recentViewIds = LinkedHashSet<String>()
         var lastActiveAppPackage: String? = null
 

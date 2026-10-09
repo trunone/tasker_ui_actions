@@ -33,6 +33,17 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".StateActivity"
+            android:exported="true"
+            android:label="@string/state_plugin_name"
+            android:icon="@mipmap/ic_launcher"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_CONDITION" />
+            </intent-filter>
+        </activity>
+
         <receiver
             android:name=".CaptureReceiver"
             android:exported="false">
@@ -48,6 +59,16 @@
             android:icon="@mipmap/ic_launcher">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".StateReceiver"
+            android:exported="true"
+            android:label="@string/state_plugin_name"
+            android:icon="@mipmap/ic_launcher">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.QUERY_CONDITION" />
             </intent-filter>
         </receiver>
 

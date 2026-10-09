@@ -76,4 +76,11 @@ class ClickServiceTest {
         assertEquals(0, all.size)
         assertEquals(null, pkgName)
     }
+
+    @Test
+    fun testIsViewIdVisibleNullOrEmpty() {
+        val service = ClickService()
+        org.junit.Assert.assertFalse(service.isViewIdVisible(null))
+        org.junit.Assert.assertFalse(service.isViewIdVisible(""))
+    }
 }
