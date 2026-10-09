@@ -7,7 +7,8 @@ import android.content.Intent
 class CaptureReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == ACTION_CAPTURE_VIEW_IDS) {
-            ClickService.instance?.captureCurrentWindowViewIds()
+            val targetActivity = intent.getStringExtra(Constants.EXTRA_TARGET_ACTIVITY)
+            ClickService.instance?.captureCurrentWindowViewIds(targetActivity)
         }
     }
 

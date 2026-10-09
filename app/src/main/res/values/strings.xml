@@ -23,4 +23,7 @@
     <string name="no_view_ids_in_window">No view IDs found in current window.</string>
     <string name="captured_view_ids_title">Select View ID from %s</string>
     <string name="id_copied_to_clipboard">Copied View ID to clipboard: %s</string>
+    <string name="state_plugin_name">View ID Visible</string>
+    <string name="state_blurb_format">View Visible: %s</string>
+    <string name="state_blurb_not_configured">View Visible: (not configured)</string>
 </resources>

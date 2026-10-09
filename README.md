@@ -7,9 +7,10 @@
 ## Features
 
 - **Automated View Clicks:** Trigger automated click actions on UI elements matching a specified resource View ID.
+- **State Plugin (View ID Visible):** React when a specific View ID becomes visible/shows on screen.
 - **View ID Capture Tool:** Capture View IDs directly from active app windows using an interactive picker or notification trigger.
 - **Automatic Clipboard Copy:** Selecting a captured View ID automatically copies it to your clipboard for easy configuration.
-- **Tasker Integration:** Seamlessly integrates as an action plugin using standard Locale/Tasker plugin APIs.
+- **Tasker Integration:** Seamlessly integrates as both an Action and State/Condition plugin using standard Locale/Tasker plugin APIs.
 
 ---
 
@@ -47,13 +48,23 @@ If you see a **"Restricted Setting"** dialog when trying to enable the accessibi
 
 ## How to Use in Tasker
 
+### Action Plugin (Click by ID)
+
 1. Open **Tasker** and open or create a Task.
 2. Tap **+** to add a new Action.
-3. Select **Plugin** > **Tasker Click Plugin**.
+3. Select **Plugin** > **Tasker Click Plugin** > **Click by ID**.
 4. Tap the **Edit** (pencil) icon to configure the action plugin:
    - **Manual Input:** Enter the target view ID (e.g., `com.example.app:id/button_submit`) into the View ID field.
    - **Pick View ID:** Tap **Pick View ID** to trigger the notification capture helper. Switch to the target application, trigger the capture notification, and select the View ID from the detected list.
 5. Save the configuration and go back to save your Tasker task.
+
+### State Plugin (View ID Visible)
+
+1. Open **Tasker** and create a new Profile.
+2. Choose **State** > **Plugin** > **Tasker Click Plugin** > **View ID Visible**.
+3. Tap the **Edit** (pencil) icon to configure the condition plugin:
+   - Enter or pick the View ID to monitor.
+4. Save the configuration and associate the Profile with your desired Tasker task.
 
 ---
 
