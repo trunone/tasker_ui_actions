@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
@@ -16,10 +17,18 @@ import androidx.core.content.ContextCompat
 class PluginActivity : AppCompatActivity() {
 
     private lateinit var editViewId: EditText
+    private var callerPackage: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_plugin)
+
+        if (savedInstanceState != null) {
+            callerPackage = savedInstanceState.getString(KEY_CALLER_PACKAGE)
+        }
+        if (callerPackage == null) {
+            updateCallerPackage()
+        }
 
         editViewId = findViewById(R.id.edit_view_id)
         val buttonPickViewId = findViewById<Button>(R.id.button_pick_view_id)
@@ -73,6 +82,21 @@ class PluginActivity : AppCompatActivity() {
             resultIntent.putExtra(Constants.EXTRA_STRING_BLURB, blurb)
 
             setResult(RESULT_OK, resultIntent)
+
+            callerPackage?.let { pkg ->
+                if (pkg != packageName) {
+                    val launchIntent = packageManager.getLaunchIntentForPackage(pkg)
+                    if (launchIntent != null) {
+                        launchIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+                        try {
+                            startActivity(launchIntent)
+                        } catch (e: Exception) {
+                            Log.e("PluginActivity", "Failed to bring host app to front", e)
+                        }
+                    }
+                }
+            }
+
             finish()
         }
     }
@@ -80,7 +104,20 @@ class PluginActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         setIntent(intent)
+        updateCallerPackage()
         handleCapturedViewIdsIntent(intent)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(KEY_CALLER_PACKAGE, callerPackage)
+    }
+
+    private fun updateCallerPackage() {
+        val caller = callingPackage ?: referrer?.host
+        if (!caller.isNullOrEmpty() && caller != packageName) {
+            callerPackage = caller
+        }
     }
 
     private fun handleCapturedViewIdsIntent(intent: Intent?) {
@@ -126,5 +163,6 @@ class PluginActivity : AppCompatActivity() {
 
     companion object {
         private const val REQUEST_CODE_NOTIFICATION_PERM = 101
+        private const val KEY_CALLER_PACKAGE = "key_caller_package"
     }
 }
