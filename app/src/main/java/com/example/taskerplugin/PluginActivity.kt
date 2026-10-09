@@ -1,6 +1,9 @@
 package com.example.taskerplugin
 
 import android.Manifest
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -8,6 +11,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -106,11 +110,20 @@ class PluginActivity : AppCompatActivity() {
             AlertDialog.Builder(this)
                 .setTitle(title)
                 .setItems(capturedIds.toTypedArray()) { _, which ->
-                    editViewId.setText(capturedIds[which])
+                    val selectedId = capturedIds[which]
+                    editViewId.setText(selectedId)
+                    copyToClipboard(selectedId)
                 }
                 .setNegativeButton(R.string.cancel, null)
                 .show()
         }
+    }
+
+    private fun copyToClipboard(text: String) {
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("View ID", text)
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(this, getString(R.string.id_copied_to_clipboard, text), Toast.LENGTH_SHORT).show()
     }
 
     override fun onRequestPermissionsResult(
