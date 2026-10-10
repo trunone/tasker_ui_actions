@@ -42,6 +42,9 @@
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_CONDITION" />
             </intent-filter>
+            <meta-data
+                android:name="net.dinglisch.android.tasker.subcategories"
+                android:value="net.dinglisch.android.tasker.subcategories.STATE" />
         </activity>
 
         <activity
@@ -52,6 +55,8 @@
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_CONDITION" />
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_EVENT" />
+                <action android:name="net.dinglisch.android.tasker.ACTION_EDIT_EVENT" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="com.twofortyfouram.locale.intent.category.EVENT" />
                 <category android:name="net.dinglisch.android.tasker.subcategories.EVENT" />
@@ -67,6 +72,9 @@
                 android:value="true" />
             <meta-data
                 android:name="net.dinglisch.android.tasker.extras.IS_EVENT"
+                android:value="true" />
+            <meta-data
+                android:name="is_event"
                 android:value="true" />
         </activity>
 
@@ -105,6 +113,7 @@
             android:icon="@mipmap/ic_launcher">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.QUERY_CONDITION" />
+                <action android:name="com.twofortyfouram.locale.intent.action.QUERY_EVENT" />
             </intent-filter>
             <meta-data
                 android:name="net.dinglisch.android.tasker.subcategories"
