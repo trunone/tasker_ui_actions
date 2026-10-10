@@ -19,6 +19,7 @@ class PluginConstantsTest {
         assertEquals(18, Constants.RESULT_CONDITION_UNKNOWN)
         assertEquals("com.example.taskerplugin.extra.VIEW_ID", Constants.BUNDLE_EXTRA_VIEW_ID)
         assertEquals("com.example.taskerplugin.extra.TARGET_ACTIVITY", Constants.EXTRA_TARGET_ACTIVITY)
+        assertEquals("net.dinglisch.android.tasker.extras.IS_EVENT", Constants.EXTRA_IS_EVENT)
     }
 
     @Test
