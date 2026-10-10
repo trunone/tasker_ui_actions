@@ -72,8 +72,12 @@ class EventActivity : AppCompatActivity() {
             val resultBundle = Bundle()
             resultBundle.putString(Constants.BUNDLE_EXTRA_VIEW_ID, viewId)
             resultBundle.putBoolean(Constants.EXTRA_IS_EVENT, true)
+            resultBundle.putBoolean("com.twofortyfouram.locale.intent.extra.IS_EVENT", true)
+            resultBundle.putBoolean("is_event", true)
             resultIntent.putExtra(Constants.EXTRA_BUNDLE, resultBundle)
             resultIntent.putExtra(Constants.EXTRA_IS_EVENT, true)
+            resultIntent.putExtra("com.twofortyfouram.locale.intent.extra.IS_EVENT", true)
+            resultIntent.putExtra("is_event", true)
 
             val blurb = if (viewId.isNotEmpty()) {
                 getString(R.string.event_blurb_format, viewId)
