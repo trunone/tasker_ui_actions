@@ -8,9 +8,10 @@
 
 - **Automated View Clicks:** Trigger automated click actions on UI elements matching a specified resource View ID.
 - **State Plugin (View ID Visible):** React when a specific View ID becomes visible/shows on screen.
+- **Event Plugin (View ID Showing):** Continuously/repeatedly trigger events while a specific View ID is showing on screen.
 - **View ID Capture Tool:** Capture View IDs directly from active app windows using an interactive picker or notification trigger.
 - **Automatic Clipboard Copy:** Selecting a captured View ID automatically copies it to your clipboard for easy configuration.
-- **Tasker Integration:** Seamlessly integrates as both an Action and State/Condition plugin using standard Locale/Tasker plugin APIs.
+- **Tasker Integration:** Seamlessly integrates as Action, State, and Event plugins using standard Locale/Tasker plugin APIs.
 
 ---
 
@@ -65,6 +66,14 @@ If you see a **"Restricted Setting"** dialog when trying to enable the accessibi
 3. Tap the **Edit** (pencil) icon to configure the condition plugin:
    - Enter or pick the View ID to monitor.
 4. Save the configuration and associate the Profile with your desired Tasker task.
+
+### Event Plugin (View ID Showing)
+
+1. Open **Tasker** and create a new Profile.
+2. Choose **Event** > **Plugin** > **Tasker Click Plugin** > **View ID Showing (Event)**.
+3. Tap the **Edit** (pencil) icon to configure the event plugin:
+   - Enter or pick the View ID to monitor.
+4. Save the configuration and associate the Profile with your desired Tasker task. The event will keep triggering repeatedly as long as the View ID is showing on screen.
 
 ---
 

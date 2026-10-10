@@ -42,4 +42,15 @@ class PluginConstantsTest {
         val emptyBlurb = if (emptyViewId.isNotEmpty()) "View Visible: $emptyViewId" else "View Visible: (not configured)"
         assertEquals("View Visible: (not configured)", emptyBlurb)
     }
+
+    @Test
+    fun testEventBlurbFormat() {
+        val viewId = "com.example.app:id/status_icon"
+        val blurb = if (viewId.isNotEmpty()) "View Showing: $viewId" else "View Showing: (not configured)"
+        assertEquals("View Showing: com.example.app:id/status_icon", blurb)
+
+        val emptyViewId = ""
+        val emptyBlurb = if (emptyViewId.isNotEmpty()) "View Showing: $emptyViewId" else "View Showing: (not configured)"
+        assertEquals("View Showing: (not configured)", emptyBlurb)
+    }
 }

@@ -44,6 +44,17 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".EventActivity"
+            android:exported="true"
+            android:label="@string/event_plugin_name"
+            android:icon="@mipmap/ic_launcher"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_CONDITION" />
+            </intent-filter>
+        </activity>
+
         <receiver
             android:name=".CaptureReceiver"
             android:exported="false">
@@ -66,6 +77,16 @@
             android:name=".StateReceiver"
             android:exported="true"
             android:label="@string/state_plugin_name"
+            android:icon="@mipmap/ic_launcher">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.QUERY_CONDITION" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".EventReceiver"
+            android:exported="true"
+            android:label="@string/event_plugin_name"
             android:icon="@mipmap/ic_launcher">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.QUERY_CONDITION" />

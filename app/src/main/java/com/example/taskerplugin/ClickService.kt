@@ -47,10 +47,15 @@ class ClickService : AccessibilityService() {
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastQueryRequestTime >= QUERY_REQUEST_THROTTLE_MS) {
             lastQueryRequestTime = currentTime
-            val intent = Intent(Constants.ACTION_REQUEST_QUERY).apply {
+            val stateIntent = Intent(Constants.ACTION_REQUEST_QUERY).apply {
                 putExtra(Constants.EXTRA_ACTIVITY, StateActivity::class.java.name)
             }
-            sendBroadcast(intent)
+            sendBroadcast(stateIntent)
+
+            val eventIntent = Intent(Constants.ACTION_REQUEST_QUERY).apply {
+                putExtra(Constants.EXTRA_ACTIVITY, EventActivity::class.java.name)
+            }
+            sendBroadcast(eventIntent)
         }
     }
 
