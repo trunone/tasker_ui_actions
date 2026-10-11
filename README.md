@@ -1,6 +1,6 @@
-# Tasker Click Plugin
+# Tasker UI Automation Plugin
 
-**Tasker Click Plugin** is an Android application and Tasker plugin that allows you to automate UI clicks on Android apps by target View ID using an Accessibility Service.
+**Tasker UI Automation Plugin** is an Android application and Tasker plugin that allows you to automate UI interactions, monitor View ID visibility, trigger events, and inspect active app windows using an Accessibility Service.
 
 ---
 
@@ -19,7 +19,7 @@
 
 - **Android Version:** Android 7.0 (API Level 24) or higher.
 - **Tasker:** [Tasker app](https://play.google.com/store/apps/details?id=net.dinglisch.android.taskerm) installed on your Android device.
-- **Accessibility Permission:** The **Tasker Click Plugin** accessibility service must be enabled in Android Settings.
+- **Accessibility Permission:** The **Tasker UI Automation Plugin** accessibility service must be enabled in Android Settings.
 
 ---
 
@@ -29,7 +29,7 @@
 
 1. Open **Settings** on your Android device.
 2. Navigate to **Accessibility** > **Downloaded apps** (or **Installed services**).
-3. Select **Tasker Click Plugin**.
+3. Select **Tasker UI Automation Plugin**.
 4. Toggle the switch to **On** and grant the required accessibility permissions.
 
 ### 2. Restricted Setting Workaround (Android 13+)
@@ -39,11 +39,11 @@ If you see a **"Restricted Setting"** dialog when trying to enable the accessibi
 **To resolve this issue:**
 
 1. Go to **Settings** > **Apps** > **See all apps**.
-2. Find and tap **Tasker Click Plugin**.
+2. Find and tap **Tasker UI Automation Plugin**.
 3. Tap the **3-dot menu** icon in the top-right corner.
 4. Select **Allow restricted settings**.
 5. Authenticate with your PIN, pattern, or fingerprint if prompted.
-6. Return to **Settings** > **Accessibility** > **Downloaded apps** and enable **Tasker Click Plugin**.
+6. Return to **Settings** > **Accessibility** > **Downloaded apps** and enable **Tasker UI Automation Plugin**.
 
 ---
 
@@ -53,7 +53,7 @@ If you see a **"Restricted Setting"** dialog when trying to enable the accessibi
 
 1. Open **Tasker** and open or create a Task.
 2. Tap **+** to add a new Action.
-3. Select **Plugin** > **Tasker Click Plugin** > **Click by ID**.
+3. Select **Plugin** > **Tasker UI Automation Plugin** > **Click by ID**.
 4. Tap the **Edit** (pencil) icon to configure the action plugin:
    - **Manual Input:** Enter the target view ID (e.g., `com.example.app:id/button_submit`) into the View ID field.
    - **Pick View ID:** Tap **Pick View ID** to trigger the notification capture helper. Switch to the target application, trigger the capture notification, and select the View ID from the detected list.
@@ -62,7 +62,7 @@ If you see a **"Restricted Setting"** dialog when trying to enable the accessibi
 ### State Plugin (View ID Visible)
 
 1. Open **Tasker** and create a new Profile.
-2. Choose **State** > **Plugin** > **Tasker Click Plugin** > **View ID Visible**.
+2. Choose **State** > **Plugin** > **Tasker UI Automation Plugin** > **View ID Visible**.
 3. Tap the **Edit** (pencil) icon to configure the condition plugin:
    - Enter or pick the View ID to monitor.
 4. Save the configuration and associate the Profile with your desired Tasker task.
@@ -70,7 +70,7 @@ If you see a **"Restricted Setting"** dialog when trying to enable the accessibi
 ### Event Plugin (View ID Showing)
 
 1. Open **Tasker** and create a new Profile.
-2. Choose **Event** > **Plugin** > **Tasker Click Plugin** > **View ID Showing (Event)**.
+2. Choose **Event** > **Plugin** > **Tasker UI Automation Plugin** > **View ID Showing (Event)**.
 3. Tap the **Edit** (pencil) icon to configure the event plugin:
    - Enter or pick the View ID to monitor.
 4. Save the configuration and associate the Profile with your desired Tasker task. The event will keep triggering repeatedly as long as the View ID is showing on screen.

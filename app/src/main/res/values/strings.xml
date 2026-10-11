@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">Tasker Click Plugin</string>
+    <string name="app_name">Tasker UI Automation Plugin</string>
     <string name="plugin_name">Click by ID</string>
     <string name="enter_view_id">Enter View ID (e.g., com.package:id/button)</string>
     <string name="save">Save</string>
-    <string name="accessibility_service_description">Allows the plugin to click elements by ID.</string>
-    <string name="activity_main_title">Tasker Click Plugin</string>
+    <string name="accessibility_service_description">Allows the plugin to perform UI automation actions like clicking elements by ID and monitoring UI visibility.</string>
+    <string name="activity_main_title">Tasker UI Automation Plugin</string>
     <string name="service_status_enabled">Accessibility Service: Enabled</string>
     <string name="service_status_disabled">Accessibility Service: Disabled</string>
     <string name="enable_service_button">Enable Accessibility Service</string>
@@ -13,7 +13,7 @@
     <string name="pick_view_id_title">Select View ID</string>
     <string name="no_view_ids_found">No view IDs captured yet. Open the target app, click or interact with the desired element, then return here to pick it.</string>
     <string name="service_not_running_title">Service Disabled</string>
-    <string name="service_not_running_message">Accessibility Service is not running. Please enable the Tasker Click Plugin service to capture view IDs from other apps.</string>
+    <string name="service_not_running_message">Accessibility Service is not running. Please enable the Tasker UI Automation Plugin service to capture view IDs from other apps.</string>
     <string name="open_settings">Open Settings</string>
     <string name="cancel">Cancel</string>
     <string name="notification_channel_name">View ID Capture</string>
