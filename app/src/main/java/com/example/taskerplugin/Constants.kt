@@ -19,4 +19,6 @@ object Constants {
     const val EXTRA_CAPTURED_VIEW_IDS = "com.example.taskerplugin.extra.CAPTURED_VIEW_IDS"
     const val EXTRA_CAPTURED_PACKAGE_NAME = "com.example.taskerplugin.extra.CAPTURED_PACKAGE_NAME"
     const val EXTRA_TARGET_ACTIVITY = "com.example.taskerplugin.extra.TARGET_ACTIVITY"
+
+    const val EXTRA_IS_EVENT = "net.dinglisch.android.tasker.extras.IS_EVENT"
 }

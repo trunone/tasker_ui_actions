@@ -26,4 +26,7 @@
     <string name="state_plugin_name">View ID Visible</string>
     <string name="state_blurb_format">View Visible: %s</string>
     <string name="state_blurb_not_configured">View Visible: (not configured)</string>
+    <string name="event_plugin_name">View ID Showing (Event)</string>
+    <string name="event_blurb_format">View Showing: %s</string>
+    <string name="event_blurb_not_configured">View Showing: (not configured)</string>
 </resources>

@@ -8,7 +8,12 @@ import android.util.Log
 class StateReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action == Constants.ACTION_QUERY_CONDITION) {
+        val action = intent.action
+        if (action == Constants.ACTION_QUERY_CONDITION ||
+            action == "com.twofortyfouram.locale.intent.action.QUERY_EVENT" ||
+            action == "net.dinglisch.android.tasker.ACTION_QUERY_EVENT" ||
+            action == "net.dinglisch.android.tasker.extras.QUERY_EVENT"
+        ) {
             val bundle = intent.getBundleExtra(Constants.EXTRA_BUNDLE)
             val viewId = bundle?.getString(Constants.BUNDLE_EXTRA_VIEW_ID)
 
