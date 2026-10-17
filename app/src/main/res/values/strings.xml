@@ -29,4 +29,6 @@
     <string name="event_plugin_name">View ID Showing (Event)</string>
     <string name="event_blurb_format">View Showing: %s</string>
     <string name="event_blurb_not_configured">View Showing: (not configured)</string>
+    <string name="logs_title">Logs</string>
+    <string name="clear_logs">Clear</string>
 </resources>
