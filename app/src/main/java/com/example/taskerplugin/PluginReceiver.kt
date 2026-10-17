@@ -3,7 +3,6 @@ package com.example.taskerplugin
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 
 class PluginReceiver : BroadcastReceiver() {
 
@@ -13,17 +12,18 @@ class PluginReceiver : BroadcastReceiver() {
             if (bundle != null) {
                 val viewId = bundle.getString(Constants.BUNDLE_EXTRA_VIEW_ID)
                 if (viewId != null) {
+                    LogManager.registerTaskerViewId(viewId)
                     val service = ClickService.instance
                     if (service != null) {
-                        Log.d("PluginReceiver", "Requesting click for $viewId")
+                        LogManager.i("PluginReceiver", "Requesting click for ID: $viewId")
                         val success = service.performClick(viewId)
                         if (success) {
-                            Log.d("PluginReceiver", "Click successful")
+                            LogManager.i("PluginReceiver", "Click action succeeded for ID: $viewId")
                         } else {
-                            Log.w("PluginReceiver", "Click failed or element not found")
+                            LogManager.w("PluginReceiver", "Click failed or element not found for ID: $viewId")
                         }
                     } else {
-                        Log.e("PluginReceiver", "Accessibility Service not running. Please enable it in Settings.")
+                        LogManager.e("PluginReceiver", "Accessibility Service not running. Please enable it in Settings.")
                     }
                 }
             }

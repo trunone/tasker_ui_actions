@@ -36,6 +36,11 @@ class ClickService : AccessibilityService() {
         if (source != null) {
             val viewId = extractViewId(source)
             if (!viewId.isNullOrEmpty()) {
+                if (LogManager.isTaskerViewId(viewId)) {
+                    LogManager.i("ClickService", "ID detected: $viewId")
+                } else {
+                    LogManager.d("ClickService", "ID detected: $viewId")
+                }
                 addRecentViewId(viewId)
             }
         }
@@ -80,7 +85,8 @@ class ClickService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         instance = this
-        Log.d("ClickService", "Service connected")
+        LogManager.init(this)
+        LogManager.i("ClickService", "Accessibility Service connected")
 
         val info = serviceInfo
         info.flags = info.flags or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS
@@ -127,6 +133,7 @@ class ClickService : AccessibilityService() {
             .build()
 
         notificationManager.notify(NOTIFICATION_ID, notification)
+        LogManager.i("ClickService", "Capture notification posted")
         Toast.makeText(this, getString(R.string.notification_posted_toast), Toast.LENGTH_LONG).show()
     }
 
@@ -142,6 +149,13 @@ class ClickService : AccessibilityService() {
 
         val finalPkg = targetPkg ?: extractedPkg
         val viewIdsToReturn = if (clickableIds.isNotEmpty()) clickableIds else allIds
+        for (id in viewIdsToReturn) {
+            if (LogManager.isTaskerViewId(id)) {
+                LogManager.i("ClickService", "ID detected: $id")
+            } else {
+                LogManager.d("ClickService", "ID detected: $id")
+            }
+        }
 
         val targetClass = try {
             if (!targetActivityClassName.isNullOrEmpty()) Class.forName(targetActivityClassName) else PluginActivity::class.java
@@ -225,10 +239,10 @@ class ClickService : AccessibilityService() {
     }
 
     fun performClick(viewId: String): Boolean {
-        Log.d("ClickService", "Attempting to click view with ID: $viewId")
+        LogManager.i("ClickService", "Attempting to click view with ID: $viewId")
         val rootNode = rootInActiveWindow
         if (rootNode == null) {
-            Log.e("ClickService", "Root node is null")
+            LogManager.e("ClickService", "Root node is null for click action")
             return false
         }
 
@@ -238,27 +252,39 @@ class ClickService : AccessibilityService() {
         if (nodes != null) {
             for (node in nodes) {
                 if (!clicked) {
-                    clicked = tryClick(node)
+                    clicked = tryClick(node, viewId)
                 }
             }
         } else {
-            Log.d("ClickService", "No nodes found for ID: $viewId")
+            LogManager.w("ClickService", "No nodes found for ID: $viewId")
+        }
+
+        if (clicked) {
+            LogManager.i("ClickService", "ID clicked: $viewId")
+        } else {
+            LogManager.w("ClickService", "Failed to click ID: $viewId")
         }
 
         return clicked
     }
 
-    private fun tryClick(node: AccessibilityNodeInfo): Boolean {
+    private fun tryClick(node: AccessibilityNodeInfo, originalViewId: String): Boolean {
         if (node.isClickable) {
-            Log.d("ClickService", "Clicking node: ${node.viewIdResourceName}")
-            return node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+            val success = node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+            if (success) {
+                LogManager.d("ClickService", "Clicked node directly for ID: $originalViewId")
+            }
+            return success
         }
 
         var current = node.parent
         while (current != null) {
             if (current.isClickable) {
-                Log.d("ClickService", "Clicking parent node: ${current.viewIdResourceName}")
-                return current.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                val success = current.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                if (success) {
+                    LogManager.d("ClickService", "Clicked parent node for ID: $originalViewId")
+                }
+                return success
             }
             current = current.parent
         }
