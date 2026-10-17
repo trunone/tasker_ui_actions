@@ -30,5 +30,6 @@
     <string name="event_blurb_format">View Showing: %s</string>
     <string name="event_blurb_not_configured">View Showing: (not configured)</string>
     <string name="logs_title">Logs</string>
+    <string name="enable_logging">Enable Logging</string>
     <string name="clear_logs">Clear</string>
 </resources>

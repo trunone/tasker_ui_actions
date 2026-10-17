@@ -1,6 +1,7 @@
 package com.example.taskerplugin
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -11,6 +12,23 @@ class LogManagerTest {
     @Before
     fun setUp() {
         LogManager.clearLogs()
+        LogManager.isLoggingEnabled = true
+    }
+
+    @Test
+    fun testLoggingDisabledByDefaultAndToggle() {
+        LogManager.isLoggingEnabled = false
+        assertFalse(LogManager.isLoggingEnabled)
+
+        LogManager.i("TestTag", "Should not be logged")
+        assertEquals(0, LogManager.getLogs().size)
+
+        LogManager.isLoggingEnabled = true
+        assertTrue(LogManager.isLoggingEnabled)
+
+        LogManager.i("TestTag", "Should be logged")
+        assertEquals(1, LogManager.getLogs().size)
+        assertEquals("Should be logged", LogManager.getLogs()[0].message)
     }
 
     @Test

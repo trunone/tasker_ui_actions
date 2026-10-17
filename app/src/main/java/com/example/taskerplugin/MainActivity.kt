@@ -13,6 +13,7 @@ import android.widget.Button
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity(), LogListener {
     private lateinit var textStatus: TextView
     private lateinit var buttonEnableService: Button
     private lateinit var textHelp: TextView
+    private lateinit var switchEnableLogging: SwitchCompat
     private lateinit var spinnerLogLevel: Spinner
     private lateinit var buttonClearLogs: Button
     private lateinit var recyclerViewLogs: RecyclerView
@@ -32,9 +34,12 @@ class MainActivity : AppCompatActivity(), LogListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        LogManager.init(this)
+
         textStatus = findViewById(R.id.text_status)
         buttonEnableService = findViewById(R.id.button_enable_service)
         textHelp = findViewById(R.id.text_help)
+        switchEnableLogging = findViewById(R.id.switch_enable_logging)
         spinnerLogLevel = findViewById(R.id.spinner_log_level)
         buttonClearLogs = findViewById(R.id.button_clear_logs)
         recyclerViewLogs = findViewById(R.id.recycler_view_logs)
@@ -53,6 +58,11 @@ class MainActivity : AppCompatActivity(), LogListener {
         layoutManager.stackFromEnd = true
         recyclerViewLogs.layoutManager = layoutManager
         recyclerViewLogs.adapter = logAdapter
+
+        switchEnableLogging.isChecked = LogManager.isLoggingEnabled
+        switchEnableLogging.setOnCheckedChangeListener { _, isChecked ->
+            LogManager.setLoggingEnabled(this, isChecked)
+        }
 
         val levelOptions = arrayOf("ALL", LogLevel.DEBUG.label, LogLevel.INFO.label, LogLevel.WARN.label, LogLevel.ERROR.label)
         val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, levelOptions)
@@ -90,6 +100,7 @@ class MainActivity : AppCompatActivity(), LogListener {
     override fun onResume() {
         super.onResume()
         updateStatus()
+        switchEnableLogging.isChecked = LogManager.isLoggingEnabled
         LogManager.addListener(this)
         refreshLogs()
     }

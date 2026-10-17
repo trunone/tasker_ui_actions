@@ -81,6 +81,7 @@ class ClickService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         instance = this
+        LogManager.init(this)
         LogManager.i("ClickService", "Accessibility Service connected")
 
         val info = serviceInfo

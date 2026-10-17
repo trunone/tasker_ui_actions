@@ -1,5 +1,6 @@
 package com.example.taskerplugin
 
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -35,10 +36,37 @@ interface LogListener {
 
 object LogManager {
     private const val MAX_LOGS = 1000
+    private const val PREFS_NAME = "log_manager_prefs"
+    private const val PREF_KEY_LOGGING_ENABLED = "logging_enabled"
+
+    @Volatile
+    var isLoggingEnabled: Boolean = false
+
     private var nextId = 1L
     private val logs = mutableListOf<LogEntry>()
     private val listeners = mutableListOf<LogListener>()
     private var mainHandler: Handler? = null
+
+    fun init(context: Context) {
+        try {
+            val prefs = context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            isLoggingEnabled = prefs.getBoolean(PREF_KEY_LOGGING_ENABLED, false)
+        } catch (e: Throwable) {
+            // Handled for unit tests
+        }
+    }
+
+    fun setLoggingEnabled(context: Context?, enabled: Boolean) {
+        isLoggingEnabled = enabled
+        if (context != null) {
+            try {
+                val prefs = context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                prefs.edit().putBoolean(PREF_KEY_LOGGING_ENABLED, enabled).apply()
+            } catch (e: Throwable) {
+                // Handled for unit tests
+            }
+        }
+    }
 
     private fun getMainHandler(): Handler? {
         if (mainHandler == null) {
@@ -68,6 +96,8 @@ object LogManager {
     }
 
     fun log(level: LogLevel, tag: String, message: String) {
+        if (!isLoggingEnabled) return
+
         try {
             when (level) {
                 LogLevel.VERBOSE -> Log.v(tag, message)
