@@ -15,6 +15,9 @@ class StateReceiver : BroadcastReceiver() {
         ) {
             val bundle = intent.getBundleExtra(Constants.EXTRA_BUNDLE)
             val viewId = bundle?.getString(Constants.BUNDLE_EXTRA_VIEW_ID)
+            if (viewId != null) {
+                LogManager.registerTaskerViewId(viewId)
+            }
 
             val service = ClickService.instance
             if (service == null) {

@@ -60,6 +60,7 @@ class EventActivity : AppCompatActivity() {
             val viewId = bundle.getString(Constants.BUNDLE_EXTRA_VIEW_ID)
             if (viewId != null) {
                 editViewId.setText(viewId)
+                LogManager.registerTaskerViewId(viewId)
             }
         }
 
@@ -67,6 +68,7 @@ class EventActivity : AppCompatActivity() {
 
         buttonSave.setOnClickListener {
             val viewId = editViewId.text.toString()
+            LogManager.registerTaskerViewId(viewId)
 
             val resultIntent = Intent()
             val resultBundle = Bundle()

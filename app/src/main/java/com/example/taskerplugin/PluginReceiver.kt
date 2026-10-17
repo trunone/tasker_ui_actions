@@ -12,6 +12,7 @@ class PluginReceiver : BroadcastReceiver() {
             if (bundle != null) {
                 val viewId = bundle.getString(Constants.BUNDLE_EXTRA_VIEW_ID)
                 if (viewId != null) {
+                    LogManager.registerTaskerViewId(viewId)
                     val service = ClickService.instance
                     if (service != null) {
                         LogManager.i("PluginReceiver", "Requesting click for ID: $viewId")

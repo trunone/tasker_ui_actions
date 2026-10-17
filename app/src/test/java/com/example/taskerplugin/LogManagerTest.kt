@@ -12,6 +12,7 @@ class LogManagerTest {
     @Before
     fun setUp() {
         LogManager.clearLogs()
+        LogManager.clearTaskerViewIds()
         LogManager.isLoggingEnabled = true
     }
 
@@ -54,6 +55,38 @@ class LogManagerTest {
         val errorLogs = LogManager.getLogs(LogLevel.ERROR)
         assertEquals(1, errorLogs.size)
         assertEquals("Error message", errorLogs[0].message)
+    }
+
+    @Test
+    fun testTaskerViewIdTrackingAndLogLevels() {
+        val taskerId = "com.app:id/tasker_button"
+        val nonTaskerId = "com.app:id/other_button"
+
+        assertFalse(LogManager.isTaskerViewId(taskerId))
+        LogManager.registerTaskerViewId(taskerId)
+        assertTrue(LogManager.isTaskerViewId(taskerId))
+        assertFalse(LogManager.isTaskerViewId(nonTaskerId))
+
+        // Simulate detection logic
+        fun logDetection(id: String) {
+            if (LogManager.isTaskerViewId(id)) {
+                LogManager.i("ClickService", "ID detected: $id")
+            } else {
+                LogManager.d("ClickService", "ID detected: $id")
+            }
+        }
+
+        logDetection(taskerId)
+        logDetection(nonTaskerId)
+
+        val logs = LogManager.getLogs()
+        val taskerLog = logs.find { it.message == "ID detected: $taskerId" }
+        val nonTaskerLog = logs.find { it.message == "ID detected: $nonTaskerId" }
+
+        assertNotNull(taskerLog)
+        assertNotNull(nonTaskerLog)
+        assertEquals(LogLevel.INFO, taskerLog?.level)
+        assertEquals(LogLevel.DEBUG, nonTaskerLog?.level)
     }
 
     @Test

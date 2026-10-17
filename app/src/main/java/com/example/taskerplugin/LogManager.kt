@@ -45,7 +45,29 @@ object LogManager {
     private var nextId = 1L
     private val logs = mutableListOf<LogEntry>()
     private val listeners = mutableListOf<LogListener>()
+    private val taskerViewIds = HashSet<String>()
     private var mainHandler: Handler? = null
+
+    fun registerTaskerViewId(viewId: String?) {
+        if (!viewId.isNullOrEmpty()) {
+            synchronized(taskerViewIds) {
+                taskerViewIds.add(viewId)
+            }
+        }
+    }
+
+    fun isTaskerViewId(viewId: String?): Boolean {
+        if (viewId.isNullOrEmpty()) return false
+        synchronized(taskerViewIds) {
+            return taskerViewIds.contains(viewId)
+        }
+    }
+
+    fun clearTaskerViewIds() {
+        synchronized(taskerViewIds) {
+            taskerViewIds.clear()
+        }
+    }
 
     fun init(context: Context) {
         try {

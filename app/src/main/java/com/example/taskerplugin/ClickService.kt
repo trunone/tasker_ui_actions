@@ -36,7 +36,11 @@ class ClickService : AccessibilityService() {
         if (source != null) {
             val viewId = extractViewId(source)
             if (!viewId.isNullOrEmpty()) {
-                LogManager.i("ClickService", "ID detected: $viewId")
+                if (LogManager.isTaskerViewId(viewId)) {
+                    LogManager.i("ClickService", "ID detected: $viewId")
+                } else {
+                    LogManager.d("ClickService", "ID detected: $viewId")
+                }
                 addRecentViewId(viewId)
             }
         }
@@ -146,7 +150,11 @@ class ClickService : AccessibilityService() {
         val finalPkg = targetPkg ?: extractedPkg
         val viewIdsToReturn = if (clickableIds.isNotEmpty()) clickableIds else allIds
         for (id in viewIdsToReturn) {
-            LogManager.i("ClickService", "ID detected: $id")
+            if (LogManager.isTaskerViewId(id)) {
+                LogManager.i("ClickService", "ID detected: $id")
+            } else {
+                LogManager.d("ClickService", "ID detected: $id")
+            }
         }
 
         val targetClass = try {
