@@ -15,7 +15,7 @@ import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 
-class ClickService : AccessibilityService() {
+open class ClickService : AccessibilityService() {
 
     private var lastQueryRequestTime = 0L
 
@@ -238,7 +238,7 @@ class ClickService : AccessibilityService() {
         return Pair(null, lastPkg)
     }
 
-    fun performClick(viewId: String): Boolean {
+    open fun performClick(viewId: String): Boolean {
         LogManager.i("ClickService", "Attempting to click view with ID: $viewId")
         val rootNode = rootInActiveWindow
         if (rootNode == null) {
