@@ -3,16 +3,35 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+fun getGitCommitHash(): String {
+    return try {
+        val process = ProcessBuilder("git", "rev-parse", "HEAD").start()
+        val commitHash = process.inputStream.bufferedReader().readText().trim()
+        process.waitFor()
+        if (commitHash.isNotEmpty()) {
+            commitHash.take(7)
+        } else {
+            "1.0"
+        }
+    } catch (e: Exception) {
+        "1.0"
+    }
+}
+
 android {
     namespace = "com.example.taskerplugin"
     compileSdk = 34
+
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId = "com.example.taskerplugin"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = getGitCommitHash()
     }
 
     buildTypes {
