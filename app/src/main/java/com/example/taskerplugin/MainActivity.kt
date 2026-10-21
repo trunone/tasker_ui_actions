@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity(), LogListener {
 
+    private lateinit var textVersion: TextView
     private lateinit var textStatus: TextView
     private lateinit var buttonEnableService: Button
     private lateinit var textHelp: TextView
@@ -35,6 +36,9 @@ class MainActivity : AppCompatActivity(), LogListener {
         setContentView(R.layout.activity_main)
 
         LogManager.init(this)
+
+        textVersion = findViewById(R.id.text_version)
+        textVersion.text = getString(R.string.app_version, BuildConfig.VERSION_NAME)
 
         textStatus = findViewById(R.id.text_status)
         buttonEnableService = findViewById(R.id.button_enable_service)

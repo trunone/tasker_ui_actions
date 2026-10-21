@@ -5,6 +5,7 @@
     <string name="save">Save</string>
     <string name="accessibility_service_description">Allows the plugin to perform UI automation actions like clicking elements by ID and monitoring UI visibility.</string>
     <string name="activity_main_title">Tasker UI Automation Plugin</string>
+    <string name="app_version">Version: %s</string>
     <string name="service_status_enabled">Accessibility Service: Enabled</string>
     <string name="service_status_disabled">Accessibility Service: Disabled</string>
     <string name="enable_service_button">Enable Accessibility Service</string>
