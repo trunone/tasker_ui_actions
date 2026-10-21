@@ -1,4 +1,4 @@
-package com.example.taskerplugin
+package com.github.trunone.tasker_ui_actions
 
 import android.content.Context
 import android.os.Handler

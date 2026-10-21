@@ -1,4 +1,4 @@
-package com.example.taskerplugin
+package com.github.trunone.tasker_ui_actions
 
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -70,7 +70,7 @@ class ClickServiceTest {
     fun testTraverseWithIgnoredPackages() {
         val (clickable, all, pkgName) = ClickService.traverseNodesForViewIds(
             null,
-            ignoredPackages = setOf("com.example.taskerplugin", "com.android.systemui")
+            ignoredPackages = setOf("com.github.trunone.tasker_ui_actions", "com.android.systemui")
         )
         assertEquals(0, clickable.size)
         assertEquals(0, all.size)

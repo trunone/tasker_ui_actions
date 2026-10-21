@@ -1,4 +1,4 @@
-package com.example.taskerplugin
+package com.github.trunone.tasker_ui_actions
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -13,6 +13,6 @@ class CaptureReceiver : BroadcastReceiver() {
     }
 
     companion object {
-        const val ACTION_CAPTURE_VIEW_IDS = "com.example.taskerplugin.ACTION_CAPTURE_VIEW_IDS"
+        const val ACTION_CAPTURE_VIEW_IDS = "com.github.trunone.tasker_ui_actions.ACTION_CAPTURE_VIEW_IDS"
     }
 }

@@ -1,4 +1,4 @@
-package com.example.taskerplugin
+package com.github.trunone.tasker_ui_actions
 
 import android.Manifest
 import android.content.ClipData
@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
-class PluginActivity : AppCompatActivity() {
+class StateActivity : AppCompatActivity() {
 
     private lateinit var editViewId: EditText
 
@@ -49,12 +49,12 @@ class PluginActivity : AppCompatActivity() {
                         REQUEST_CODE_NOTIFICATION_PERM
                     )
                 } else {
-                    ClickService.instance?.showCaptureNotification()
+                    ClickService.instance?.showCaptureNotification(StateActivity::class.java.name)
                 }
             }
         }
 
-        // If editing an existing action, load the value
+        // If editing an existing condition, load the value
         val bundle = intent?.getBundleExtra(Constants.EXTRA_BUNDLE)
         if (bundle != null) {
             val viewId = bundle.getString(Constants.BUNDLE_EXTRA_VIEW_ID)
@@ -75,7 +75,11 @@ class PluginActivity : AppCompatActivity() {
             resultBundle.putString(Constants.BUNDLE_EXTRA_VIEW_ID, viewId)
             resultIntent.putExtra(Constants.EXTRA_BUNDLE, resultBundle)
 
-            val blurb = if (viewId.isNotEmpty()) "Click: $viewId" else "Click: (not configured)"
+            val blurb = if (viewId.isNotEmpty()) {
+                getString(R.string.state_blurb_format, viewId)
+            } else {
+                getString(R.string.state_blurb_not_configured)
+            }
             resultIntent.putExtra(Constants.EXTRA_STRING_BLURB, blurb)
 
             setResult(RESULT_OK, resultIntent)
@@ -135,7 +139,7 @@ class PluginActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_NOTIFICATION_PERM) {
-            ClickService.instance?.showCaptureNotification()
+            ClickService.instance?.showCaptureNotification(StateActivity::class.java.name)
         }
     }
 

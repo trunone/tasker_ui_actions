@@ -19,7 +19,7 @@ fun getGitCommitHash(): String {
 }
 
 android {
-    namespace = "com.example.taskerplugin"
+    namespace = "com.github.trunone.tasker_ui_actions"
     compileSdk = 34
 
     buildFeatures {
@@ -27,7 +27,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.taskerplugin"
+        applicationId = "com.github.trunone.tasker_ui_actions"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

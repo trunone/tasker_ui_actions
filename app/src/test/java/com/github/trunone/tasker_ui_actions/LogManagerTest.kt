@@ -1,4 +1,4 @@
-package com.example.taskerplugin
+package com.github.trunone.tasker_ui_actions
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

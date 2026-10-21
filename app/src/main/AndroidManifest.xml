@@ -79,7 +79,7 @@
             android:name=".CaptureReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.example.taskerplugin.ACTION_CAPTURE_VIEW_IDS" />
+                <action android:name="com.github.trunone.tasker_ui_actions.ACTION_CAPTURE_VIEW_IDS" />
             </intent-filter>
         </receiver>
 

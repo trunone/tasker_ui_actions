@@ -1,4 +1,4 @@
-package com.example.taskerplugin
+package com.github.trunone.tasker_ui_actions
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -17,8 +17,8 @@ class PluginConstantsTest {
         assertEquals(16, Constants.RESULT_CONDITION_SATISFIED)
         assertEquals(17, Constants.RESULT_CONDITION_UNSATISFIED)
         assertEquals(18, Constants.RESULT_CONDITION_UNKNOWN)
-        assertEquals("com.example.taskerplugin.extra.VIEW_ID", Constants.BUNDLE_EXTRA_VIEW_ID)
-        assertEquals("com.example.taskerplugin.extra.TARGET_ACTIVITY", Constants.EXTRA_TARGET_ACTIVITY)
+        assertEquals("com.github.trunone.tasker_ui_actions.extra.VIEW_ID", Constants.BUNDLE_EXTRA_VIEW_ID)
+        assertEquals("com.github.trunone.tasker_ui_actions.extra.TARGET_ACTIVITY", Constants.EXTRA_TARGET_ACTIVITY)
         assertEquals("net.dinglisch.android.tasker.extras.IS_EVENT", Constants.EXTRA_IS_EVENT)
     }
 
