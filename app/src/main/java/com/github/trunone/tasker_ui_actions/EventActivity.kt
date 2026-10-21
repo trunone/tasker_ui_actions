@@ -1,4 +1,4 @@
-package com.example.taskerplugin
+package com.github.trunone.tasker_ui_actions
 
 import android.Manifest
 import android.content.ClipData
@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
-class StateActivity : AppCompatActivity() {
+class EventActivity : AppCompatActivity() {
 
     private lateinit var editViewId: EditText
 
@@ -49,7 +49,7 @@ class StateActivity : AppCompatActivity() {
                         REQUEST_CODE_NOTIFICATION_PERM
                     )
                 } else {
-                    ClickService.instance?.showCaptureNotification(StateActivity::class.java.name)
+                    ClickService.instance?.showCaptureNotification(EventActivity::class.java.name)
                 }
             }
         }
@@ -73,12 +73,18 @@ class StateActivity : AppCompatActivity() {
             val resultIntent = Intent()
             val resultBundle = Bundle()
             resultBundle.putString(Constants.BUNDLE_EXTRA_VIEW_ID, viewId)
+            resultBundle.putBoolean(Constants.EXTRA_IS_EVENT, true)
+            resultBundle.putBoolean("com.twofortyfouram.locale.intent.extra.IS_EVENT", true)
+            resultBundle.putBoolean("is_event", true)
             resultIntent.putExtra(Constants.EXTRA_BUNDLE, resultBundle)
+            resultIntent.putExtra(Constants.EXTRA_IS_EVENT, true)
+            resultIntent.putExtra("com.twofortyfouram.locale.intent.extra.IS_EVENT", true)
+            resultIntent.putExtra("is_event", true)
 
             val blurb = if (viewId.isNotEmpty()) {
-                getString(R.string.state_blurb_format, viewId)
+                getString(R.string.event_blurb_format, viewId)
             } else {
-                getString(R.string.state_blurb_not_configured)
+                getString(R.string.event_blurb_not_configured)
             }
             resultIntent.putExtra(Constants.EXTRA_STRING_BLURB, blurb)
 
@@ -139,7 +145,7 @@ class StateActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_NOTIFICATION_PERM) {
-            ClickService.instance?.showCaptureNotification(StateActivity::class.java.name)
+            ClickService.instance?.showCaptureNotification(EventActivity::class.java.name)
         }
     }
 

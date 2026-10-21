@@ -1,4 +1,4 @@
-package com.example.taskerplugin
+package com.github.trunone.tasker_ui_actions
 
 import android.Manifest
 import android.content.ClipData
@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
-class EventActivity : AppCompatActivity() {
+class PluginActivity : AppCompatActivity() {
 
     private lateinit var editViewId: EditText
 
@@ -49,12 +49,12 @@ class EventActivity : AppCompatActivity() {
                         REQUEST_CODE_NOTIFICATION_PERM
                     )
                 } else {
-                    ClickService.instance?.showCaptureNotification(EventActivity::class.java.name)
+                    ClickService.instance?.showCaptureNotification()
                 }
             }
         }
 
-        // If editing an existing condition, load the value
+        // If editing an existing action, load the value
         val bundle = intent?.getBundleExtra(Constants.EXTRA_BUNDLE)
         if (bundle != null) {
             val viewId = bundle.getString(Constants.BUNDLE_EXTRA_VIEW_ID)
@@ -73,19 +73,9 @@ class EventActivity : AppCompatActivity() {
             val resultIntent = Intent()
             val resultBundle = Bundle()
             resultBundle.putString(Constants.BUNDLE_EXTRA_VIEW_ID, viewId)
-            resultBundle.putBoolean(Constants.EXTRA_IS_EVENT, true)
-            resultBundle.putBoolean("com.twofortyfouram.locale.intent.extra.IS_EVENT", true)
-            resultBundle.putBoolean("is_event", true)
             resultIntent.putExtra(Constants.EXTRA_BUNDLE, resultBundle)
-            resultIntent.putExtra(Constants.EXTRA_IS_EVENT, true)
-            resultIntent.putExtra("com.twofortyfouram.locale.intent.extra.IS_EVENT", true)
-            resultIntent.putExtra("is_event", true)
 
-            val blurb = if (viewId.isNotEmpty()) {
-                getString(R.string.event_blurb_format, viewId)
-            } else {
-                getString(R.string.event_blurb_not_configured)
-            }
+            val blurb = if (viewId.isNotEmpty()) "Click: $viewId" else "Click: (not configured)"
             resultIntent.putExtra(Constants.EXTRA_STRING_BLURB, blurb)
 
             setResult(RESULT_OK, resultIntent)
@@ -145,7 +135,7 @@ class EventActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_NOTIFICATION_PERM) {
-            ClickService.instance?.showCaptureNotification(EventActivity::class.java.name)
+            ClickService.instance?.showCaptureNotification()
         }
     }
 

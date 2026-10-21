@@ -1,4 +1,4 @@
-package com.example.taskerplugin
+package com.github.trunone.tasker_ui_actions
 
 object Constants {
     const val ACTION_FIRE_SETTING = "com.twofortyfouram.locale.intent.action.FIRE_SETTING"
@@ -14,11 +14,11 @@ object Constants {
     const val RESULT_CONDITION_UNSATISFIED = 17
     const val RESULT_CONDITION_UNKNOWN = 18
 
-    const val BUNDLE_EXTRA_VIEW_ID = "com.example.taskerplugin.extra.VIEW_ID"
+    const val BUNDLE_EXTRA_VIEW_ID = "com.github.trunone.tasker_ui_actions.extra.VIEW_ID"
 
-    const val EXTRA_CAPTURED_VIEW_IDS = "com.example.taskerplugin.extra.CAPTURED_VIEW_IDS"
-    const val EXTRA_CAPTURED_PACKAGE_NAME = "com.example.taskerplugin.extra.CAPTURED_PACKAGE_NAME"
-    const val EXTRA_TARGET_ACTIVITY = "com.example.taskerplugin.extra.TARGET_ACTIVITY"
+    const val EXTRA_CAPTURED_VIEW_IDS = "com.github.trunone.tasker_ui_actions.extra.CAPTURED_VIEW_IDS"
+    const val EXTRA_CAPTURED_PACKAGE_NAME = "com.github.trunone.tasker_ui_actions.extra.CAPTURED_PACKAGE_NAME"
+    const val EXTRA_TARGET_ACTIVITY = "com.github.trunone.tasker_ui_actions.extra.TARGET_ACTIVITY"
 
     const val EXTRA_IS_EVENT = "net.dinglisch.android.tasker.extras.IS_EVENT"
 }
